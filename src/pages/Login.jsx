@@ -15,12 +15,21 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const res = await login(email, password);
+    console.log(res);
+  
     if (res.success) {
-      navigate("/");
+      console.log(res.userData.role === "ROLE_ADMIN");
+      
+      if (res.userData.role === "ROLE_ADMIN") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
     } else {
       setErrorMsg(res.message);
     }
   };
+  
 
 
   return (
