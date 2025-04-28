@@ -11,6 +11,7 @@ import Signup from "@/pages/Signup"
 import ProductDetail from "@/pages/ProductDetail"
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import ProtectedRoute from "./ProtectedRoute";
+import ProductByCategory from "@/pages/ProductByCategory"
 
 const AppRoutes = () => {
   return (
@@ -20,6 +21,8 @@ const AppRoutes = () => {
         <Route path="/" element={<Home />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/products/:id" element={<ProductDetail />} />
+        <Route path="/category/all" element={<ProductByCategory />} />
+        <Route path="/category/:id" element={<ProductByCategory />} />
       </Route>
 
       {/* Trang dùng AuthLayout */}

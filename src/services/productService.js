@@ -1,11 +1,13 @@
 import {axiosPublic, axiosAuth } from './axios.js';
 
-export const getActiveFeaturedProduct = async (page = 0, size = 10) => {
+export const getActiveFeaturedProduct = async (page = 0, size = 10, sortDir = "asc", sortBy = "createdAt") => {
   try {
     const response = await axiosPublic.get('/products/feature/active', {
       params: {
         page,
-        size
+        size,
+        sortBy,
+        sortDir
       }
     });
 
@@ -29,6 +31,40 @@ export const getProductDetailById = async (id) => {
 export const getReviewStatisticByProductId = async (id) => {
   try {
     const response = await axiosPublic.get(`/reviews/product/${id}/statistic`);
+    return response.data.data;
+  } catch (error) {
+    // Ném ra lỗi để component phía trên xử lý hiển thị
+    throw new Error(error.response?.data?.message);
+  }
+};
+
+export const getProductByCategoryId = async (id, page = 0, size = 10, sortDir = "asc", sortBy = "createdAt") => {
+  try {
+    const response = await axiosPublic.get(`/products/category/${id}`, {
+      params: {
+        page,
+        size,
+        sortBy,
+        sortDir
+      }
+    });
+    return response.data.data;
+  } catch (error) {
+    // Ném ra lỗi để component phía trên xử lý hiển thị
+    throw new Error(error.response?.data?.message);
+  }
+};
+
+export const getAllActiveProducts = async (page = 0, size = 10, sortDir = "asc", sortBy = "createdAt") => {
+  try {
+    const response = await axiosPublic.get(`/products`, {
+      params: {
+        page,
+        size,
+        sortBy,
+        sortDir
+      }
+    });
     return response.data.data;
   } catch (error) {
     // Ném ra lỗi để component phía trên xử lý hiển thị
