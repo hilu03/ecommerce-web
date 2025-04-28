@@ -48,9 +48,13 @@ const Navbar = () => {
           <DropdownMenuContent>
             <DropdownMenuLabel>Danh mục sản phẩm</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Tất cả danh mục</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link to="/category/all">Tất cả sản phẩm</Link>
+            </DropdownMenuItem>
             {categories.map((cat) => (
-              <DropdownMenuItem key={cat.id}>{cat.name}</DropdownMenuItem>
+              <DropdownMenuItem key={cat.id}>
+                <Link to={`/category/${cat.id}`}>{cat.name}</Link>
+              </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
         </DropdownMenu>

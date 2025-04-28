@@ -9,3 +9,13 @@ export const getCategoriesList = async () => {
     throw error;
   }
 };
+
+export const getCategoryById = async (id) => {
+  try {
+    const response = await axiosPublic.get(`/categories/${id}`)
+    return response.data.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy danh mục:", error)
+    throw error;
+  }
+};
