@@ -16,16 +16,6 @@ import { FaShoppingCart } from "react-icons/fa";
 import { useEffect, useState } from 'react';
 import { getCategoriesList } from '@/services/categoryService';
 import { useAuth } from '@/context/AuthContext';
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuIndicator,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  NavigationMenuViewport,
-} from "@/components/ui/navigation-menu"
 import { FaUserCircle } from "react-icons/fa";
 
 const Navbar = () => {
@@ -46,7 +36,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="bg-[var(--primary-color)] text-white shadow px-12 py-2 flex justify-between items-center sticky top-0 z-10">
+    <nav className="bg-[var(--primary-color)] text-white shadow px-4 lg:px-16 py-2 flex justify-between items-center sticky top-0 z-10">
       <Link to="/" className="text-xl font-bold">
         <img src={logo} alt="Logo" className="w-[60px]" />
       </Link>
@@ -77,31 +67,29 @@ const Navbar = () => {
         </Button>
       </div>
       <div className="space-x-4 flex items-center">
-        <Link to="/cart"><FaShoppingCart className='text-2xl'/></Link>
+        <Link to="/cart"><FaShoppingCart className='text-2xl' /></Link>
         {user && isAuthenticated ?
-          <NavigationMenu>
-            <NavigationMenuList>
-              <NavigationMenuItem>
-                <NavigationMenuTrigger className='text-black flex items-center'>
-                  <FaUserCircle />
-                  <span>{user.firstName}</span>
-                </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <NavigationMenuLink asChild>
-                    <Link to='#' className="block px-1 py-1 hover:bg-gray-100 rounded">Thông tin cá nhân</Link>
-                  </NavigationMenuLink>
-                  <NavigationMenuLink asChild>
-                    <button
-                      onClick={logout}
-                      className="block w-full text-left px-2 py-1 hover:bg-gray-100 rounded"
-                    >
-                      Đăng xuất
-                    </button>
-                  </NavigationMenuLink>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center cursor-pointer space-x-1">
+              <span>{user.firstName}</span>
+              <FaUserCircle />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>Tài khoản</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Profile</DropdownMenuItem>
+              <DropdownMenuItem>Billing</DropdownMenuItem>
+              <DropdownMenuItem>Team</DropdownMenuItem>
+              <DropdownMenuItem>
+                <button
+                  onClick={logout}
+                  className="block w-full text-left px-2 py-1 hover:bg-gray-100 rounded"
+                >
+                  Đăng xuất
+                </button>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           : <Link to="/login" className='font-bold'>Đăng nhập</Link>}
       </div>
     </nav>
