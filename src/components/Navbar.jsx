@@ -14,7 +14,7 @@ import {
 import { BiCategoryAlt } from "react-icons/bi";
 import { FaShoppingCart } from "react-icons/fa";
 import { useEffect, useState } from 'react';
-import { getCategoriesList } from '@/services/categoryService';
+import { getActiveCategories } from '@/services/categoryService';
 import { useAuth } from '@/context/AuthContext';
 import { FaUserCircle } from "react-icons/fa";
 
@@ -25,7 +25,7 @@ const Navbar = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getCategoriesList();
+        const data = await getActiveCategories();
         setCategories(data);
       } catch (err) {
         console.error("Không thể load danh mục", err);
@@ -72,7 +72,7 @@ const Navbar = () => {
       </div>
       <div className="space-x-4 flex items-center">
         <Link to="/cart"><FaShoppingCart className='text-2xl' /></Link>
-        {user && isAuthenticated ?
+        {user && isAuthenticated && user.role === "ROLE_USER" ?
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center cursor-pointer space-x-1">
               <span>{user.firstName}</span>
@@ -84,14 +84,7 @@ const Navbar = () => {
               <DropdownMenuItem>Profile</DropdownMenuItem>
               <DropdownMenuItem>Billing</DropdownMenuItem>
               <DropdownMenuItem>Team</DropdownMenuItem>
-              <DropdownMenuItem>
-                <button
-                  onClick={logout}
-                  className="block w-full text-left px-2 py-1 hover:bg-gray-100 rounded"
-                >
-                  Đăng xuất
-                </button>
-              </DropdownMenuItem>
+              <DropdownMenuItem onClick={logout}>Đăng xuất</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
           : <Link to="/login" className='font-bold'>Đăng nhập</Link>}

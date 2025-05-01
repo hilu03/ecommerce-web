@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ProductInfo from "@/components/ProductInfo";
-import { getProductDetailById, getReviewStatisticByProductId } from "@/services/productService";
+import { getProductById, getReviewStatisticByProductId } from "@/services/productService";
 import { getReviewByProductId } from "@/services/reviewService";
 import ReviewSection from "@/components/ReviewSection";
 
@@ -16,7 +16,7 @@ const ProductDetail = () => {
     // Gọi API lấy thông tin sản phẩm
     const fetchProductDetail = async () => {
       try {
-        const productData = await getProductDetailById(id);
+        const productData = await getProductById(id);
         setProduct(productData);
       } catch (error) {
         console.error("Error fetching product details:", error.message);

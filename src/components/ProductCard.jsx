@@ -18,7 +18,7 @@ const ProductCard = ({ info }) => {
           <img
             src={imageUrl}
             alt={name}
-            className="w-full h-48 object-cover rounded-xl"
+            className="w-full h-48 object-contain rounded-xl "
           />
         </CardHeader>
         <CardContent>

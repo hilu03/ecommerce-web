@@ -1,5 +1,5 @@
-import { getCategoriesList, getCategoryById } from "@/services/categoryService";
-import { getAllActiveProducts, getProductByCategoryId } from "@/services/productService";
+import { getActiveCategories, getCategoryById } from "@/services/categoryService";
+import { getAllActiveProducts, getActiveProductByCategoryId } from "@/services/productService";
 import { useEffect, useState } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import CategorySidebar from "@/components/CategorySidebar";
@@ -42,7 +42,7 @@ const ProductByCategory = () => {
 
     const fetchAllCategories = async () => {
       try {
-        const data = await getCategoriesList();
+        const data = await getActiveCategories();
         setCategories(data);
       } catch (err) {
         console.error("Không thể load danh mục", err);
@@ -57,7 +57,7 @@ const ProductByCategory = () => {
           console.log(products);
         }
         else {
-          const data = await getProductByCategoryId(id, page, size);
+          const data = await getActiveProductByCategoryId(id, page, size);
           setProducts(data);
         }
       } catch (err) {

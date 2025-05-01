@@ -12,6 +12,10 @@ import ProductDetail from "@/pages/ProductDetail"
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import ProtectedRoute from "./ProtectedRoute";
 import ProductByCategory from "@/pages/ProductByCategory"
+import CategoryManagement from "@/pages/admin/CategoryManagement"
+import ProductManagement from "@/pages/admin/ProductManagement"
+import UserManagement from "@/pages/admin/UserManagement"
+import CreateProduct from "@/components/admin/ProductFormModal"
 
 const AppRoutes = () => {
   return (
@@ -34,6 +38,9 @@ const AppRoutes = () => {
       <Route element={<ProtectedRoute />}>
         <Route element={<AdminLayout />}>
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/categories" element={<CategoryManagement />} />
+          <Route path="/admin/products" element={<ProductManagement />} />
+          <Route path="/admin/users" element={<UserManagement />} />
         </Route>
       </Route>
     </Routes>

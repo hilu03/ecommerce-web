@@ -14,12 +14,8 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await login(email, password);
-    console.log(res);
-  
-    if (res.success) {
-      console.log(res.userData.role === "ROLE_ADMIN");
-      
+    const res = await login(email, password);  
+    if (res.success) {      
       if (res.userData.role === "ROLE_ADMIN") {
         navigate("/admin");
       } else {
@@ -30,8 +26,6 @@ const Login = () => {
     }
   };
   
-
-
   return (
     <div className="w-full max-w-md m-auto bg-indigo-100 rounded p-8">   
       <header className='flex justify-center mb-4'>
