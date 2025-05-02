@@ -22,7 +22,7 @@ const AdminLayout = () => {
           <Link to="/admin" className="hover:bg-white hover:text-[var(--primary-color)] p-2 rounded">Dashboard</Link>
           <Link to="/admin/categories" className="hover:bg-white hover:text-[var(--primary-color)] p-2 rounded">Quản lý danh mục</Link>
           <Link to="/admin/products" className="hover:bg-white hover:text-[var(--primary-color)] p-2 rounded">Quản lý sản phẩm</Link>
-          <Link to="/admin/users" className="hover:bg-white hover:text-[var(--primary-color)] p-2 rounded">Quản lý người dùng</Link>
+          <Link to="/admin/users" className="hover:bg-white hover:text-[var(--primary-color)] p-2 rounded">Quản lý khách hàng</Link>
         </nav>
       </aside>
 

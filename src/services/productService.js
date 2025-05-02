@@ -149,7 +149,6 @@ export const getAllHiddenProducts = async (page = 0, size = 10, sortDir = "asc",
         sortDir
       }
     });
-    console.log(response.data.data);
     return response.data.data;
   } 
   catch (error) {

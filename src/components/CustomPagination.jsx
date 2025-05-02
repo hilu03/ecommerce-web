@@ -1,58 +1,62 @@
-import React from "react";
-import { Pagination } from "./ui/pagination";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationPrevious,
+  PaginationNext,
+} from "@/components/ui/pagination";
 
 const CustomPagination = ({ page, totalPages, onPageChange }) => {
-  const pageNumbers = [];
+  if (totalPages <= 1) return null;
 
-  // Hiển thị trang đầu tiên và cuối cùng
-  if (totalPages <= 4) {
-    for (let i = 1; i <= totalPages; i++) {
-      pageNumbers.push(i);
+  const getPageNumbers = () => {
+    const maxVisible = 5;
+    const startPage = Math.max(1, page - 2);
+    const endPage = Math.min(startPage + maxVisible - 1, totalPages);
+    const pages = [];
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
     }
-  } else {
-    if (page > 2) pageNumbers.push(1);
-    if (page > 3) pageNumbers.push("...");
-
-    // Hiển thị 3 trang xung quanh trang hiện tại
-    for (let i = Math.max(1, page - 1); i <= Math.min(totalPages, page + 1); i++) {
-      pageNumbers.push(i);
-    }
-
-    if (page < totalPages - 2) pageNumbers.push("...");
-    if (page < totalPages - 1) pageNumbers.push(totalPages);
-  }
+    return pages;
+  };
 
   return (
-    <div className="pagination flex items-center gap-2">
-      <Pagination
-        current={page}
-        total={totalPages}
-        onChange={onPageChange}
-        showQuickJumper
-        showSizeChanger={false} // Hide size changer if not needed
-      >
-        {/* Here we just display the buttons */}
-        {pageNumbers.map((num, index) =>
-          num === "..." ? (
-            <span key={index} className="text-gray-500">
-              ...
-            </span>
-          ) : (
+    <Pagination>
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationPrevious
+            onClick={() => onPageChange(Math.max(page - 1, 1))}
+            className={page === 1 ? "pointer-events-none opacity-50" : ""}
+          >
+            Previous
+          </PaginationPrevious>
+        </PaginationItem>
+
+        {getPageNumbers().map((pageNumber) => (
+          <PaginationItem key={pageNumber}>
             <button
-              key={index}
-              onClick={() => onPageChange(num)}
-              className={`px-3 py-2 rounded-md ${
-                num === page
+              onClick={() => onPageChange(pageNumber)}
+              className={`px-3 py-1 border rounded ${
+                page === pageNumber
                   ? "bg-blue-500 text-white"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  : "bg-white text-gray-700"
               }`}
             >
-              {num}
+              {pageNumber}
             </button>
-          )
-        )}
-      </Pagination>
-    </div>
+          </PaginationItem>
+        ))}
+
+        <PaginationItem>
+          <PaginationNext
+            onClick={() => onPageChange(Math.min(page + 1, totalPages))}
+            className={page === totalPages ? "pointer-events-none opacity-50" : ""}
+          >
+            Next
+          </PaginationNext>
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
   );
 };
 

@@ -3,14 +3,9 @@ import { formatCurrency } from "@/utils/formatCurrency";
 import ProductFormModal from "@/components/admin/ProductFormModal";
 import { getAllActiveProducts, getAllHiddenProducts, getActiveProductByCategoryId, toggleProductStatus, getHiddenProductByCategoryId } from "@/services/productService";
 import { getActiveCategories } from "@/services/categoryService";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationPrevious,
-  PaginationNext,
-} from "@/components/ui/pagination";
 import ProductDetailModal from "@/components/admin/ProductDetailModal";
+import CustomPagination from "@/components/CustomPagination";
+import { toast } from "sonner";
 
 const ProductManagement = () => {
   const [statusFilter, setStatusFilter] = useState("active");
@@ -39,16 +34,41 @@ const ProductManagement = () => {
     setEditingProductId(null);
   };
 
+  const fetchDataByCategoryAndActive = async () => {
+    try {
+      if (categoryFilter === "all") {
+        if (statusFilter === "active") {
+          const data = await getAllActiveProducts(page - 1, size);
+          setProducts(data);
+        }
+        else {
+          const data = await getAllHiddenProducts(page - 1, size);
+          setProducts(data);
+        }
+      }
+      else {
+        if (statusFilter === "active") {
+          const data = await getActiveProductByCategoryId(categoryFilter, page - 1, size);
+          setProducts(data);
+        }
+        else {
+          const data = await getHiddenProductByCategoryId(categoryFilter, page - 1, size);
+          setProducts(data);
+        }
+      }
+    }
+    catch (err) {
+      console.error("Lỗi khi tải sản phẩm hoặc danh mục:", err);
+    }
+  };
+
   const handleToggle = async (productId) => {
     try {
-      const updatedProduct = await toggleProductStatus(productId);
-      setProducts((prevProducts) => ({
-        ...prevProducts,
-        content: prevProducts.content.map((product) =>
-          product.id === productId ? { ...product, deleted: !product.deleted } : product
-        ),
-      }));
+      await toggleProductStatus(productId);
+      toast.success("Cập nhật thành công!");
+      fetchDataByCategoryAndActive();
     } catch (err) {
+      toast.error("Cập nhật thất bại!");
       console.error("Lỗi khi thay đổi trạng thái sản phẩm:", err);
     }
   };
@@ -80,35 +100,7 @@ const ProductManagement = () => {
   }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (categoryFilter === "all") {
-          if (statusFilter === "active") {
-            const data = await getAllActiveProducts(page - 1, size);
-            setProducts(data);
-          }
-          else {
-            const data = await getAllHiddenProducts(page - 1, size);
-            setProducts(data);
-          }
-        }
-        else {
-          if (statusFilter === "active") {
-            const data = await getActiveProductByCategoryId(categoryFilter, page - 1, size);
-            setProducts(data);
-          }
-          else {
-            const data = await getHiddenProductByCategoryId(categoryFilter, page - 1, size);
-            setProducts(data);
-          }
-        }
-      }
-      catch (err) {
-        console.error("Lỗi khi tải sản phẩm hoặc danh mục:", err);
-      }
-    };
-
-    fetchData();
+    fetchDataByCategoryAndActive();
   }, [categoryFilter, statusFilter, page]);
 
   return (
@@ -123,7 +115,6 @@ const ProductManagement = () => {
         </button>
       </div>
 
-      {/* Bộ lọc */}
       <div className="flex flex-wrap justify-between items-center gap-6 mb-4">
         <div>
           <label className="mr-2 font-medium">Danh mục:</label>
@@ -166,7 +157,6 @@ const ProductManagement = () => {
         </div>
       </div>
 
-      {/* Bảng sản phẩm */}
       <div className="bg-white p-4 shadow rounded-lg">
         <table className="min-w-full border border-gray-300">
           <thead>
@@ -245,58 +235,11 @@ const ProductManagement = () => {
 
         {products?.page.totalPages > 1 && (
           <div className="mt-4 flex justify-center">
-            <Pagination>
-              <PaginationContent>
-                {/* Previous Button */}
-                <PaginationItem>
-                  <PaginationPrevious
-                    onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                    className={page === 1 ? "pointer-events-none opacity-50" : ""}
-                  >
-                    Previous
-                  </PaginationPrevious>
-                </PaginationItem>
-
-                {/* Numbered Pagination */}
-                {Array.from(
-                  { length: Math.min(5, products.page.totalPages) }, // Show up to 5 pages
-                  (_, index) => {
-                    const startPage = Math.max(1, page - 2); // Start from 2 pages before the current page
-                    const pageNumber = startPage + index; // Calculate the page number dynamically
-                    if (pageNumber > products.page.totalPages) return null; // Avoid rendering invalid pages
-                    return (
-                      <PaginationItem key={pageNumber}>
-                        <button
-                          onClick={() => setPage(pageNumber)}
-                          className={`px-3 py-1 border rounded ${page === pageNumber
-                            ? "bg-blue-500 text-white"
-                            : "bg-white text-gray-700"
-                            }`}
-                        >
-                          {pageNumber}
-                        </button>
-                      </PaginationItem>
-                    );
-                  }
-                )}
-
-                {/* Next Button */}
-                <PaginationItem>
-                  <PaginationNext
-                    onClick={() =>
-                      setPage((prev) => Math.min(prev + 1, products.page.totalPages))
-                    }
-                    className={
-                      page === products.page.totalPages
-                        ? "pointer-events-none opacity-50"
-                        : ""
-                    }
-                  >
-                    Next
-                  </PaginationNext>
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
+            <CustomPagination
+              page={page}
+              totalPages={products.page.totalPages}
+              onPageChange={setPage}
+            />
           </div>
         )}
 
