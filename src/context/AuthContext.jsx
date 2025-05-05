@@ -35,14 +35,16 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = async () => {
+  const logout = async (toHome = true) => {
     try {
       await logoutAPI();
       setUser(null);
       setIsAuthenticated(false);
       localStorage.removeItem("user");
       localStorage.removeItem("token");
-      navigate("/");
+      if (toHome) {
+        navigate("/");
+      }
     } catch (error) {
       console.error("Error:", error.message);
     }

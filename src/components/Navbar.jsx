@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import { IoSearch } from "react-icons/io5";
 import { Input } from "@/components/ui/input";
@@ -19,6 +19,7 @@ import { useAuth } from '@/context/AuthContext';
 import { FaUserCircle } from "react-icons/fa";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const { user, isAuthenticated, logout } = useAuth();
 
@@ -81,9 +82,9 @@ const Navbar = () => {
             <DropdownMenuContent>
               <DropdownMenuLabel>Tài khoản</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Billing</DropdownMenuItem>
-              <DropdownMenuItem>Team</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate("/profile")}>Thông tin cá nhân</DropdownMenuItem>
+              <DropdownMenuItem>Đánh giá của tôi</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate("/change-password")}>Đổi mật khẩu</DropdownMenuItem>
               <DropdownMenuItem onClick={logout}>Đăng xuất</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

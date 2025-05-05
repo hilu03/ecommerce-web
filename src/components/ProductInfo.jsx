@@ -4,16 +4,16 @@ import { FaCartPlus } from "react-icons/fa";
 import { formatCurrency } from "@/utils/formatCurrency";
 
 
-const ProductInfo = ({product}) => {
+const ProductInfo = ({product, reviewStatistic}) => {
   const [quantity, setQuantity] = useState(1);
 
   return (
     <div className="bg-gray-100">
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-wrap -mx-4">
-          <div className="w-full md:w-1/2 px-4 mb-8">
+          <div className="w-full md:w-1/2 px-4 mb-8 ">
             <img src={product.imageUrl} alt="Product"
-              className="w-full h-auto rounded-lg shadow-md mb-4" id="mainImage" />
+              className="bg-white w-full max-w-[720px] h-[480px] object-contain rounded-lg shadow-md mb-4 mx-auto" id="mainImage" />
           </div>
 
           <div className="w-full md:w-1/2 px-4">
@@ -22,9 +22,9 @@ const ProductInfo = ({product}) => {
               <span className="text-2xl font-bold mr-2 text-red-500">{formatCurrency(product.price)}</span>
             </div>
             <div className="flex items-center mb-4">
-              <RatingStars rating={product.rating} />
+              <RatingStars rating={reviewStatistic.averageRating} />
               <span className="ml-2 text-gray-600">
-                {product.rating} ({product.reviewCount} đánh giá) 
+                {reviewStatistic.averageRating}/5 ({reviewStatistic.count} đánh giá) 
               </span>
             </div>
             <p className="text-gray-700 mb-6">

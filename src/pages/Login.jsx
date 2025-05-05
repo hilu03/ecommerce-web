@@ -36,11 +36,11 @@ const Login = () => {
       <form onSubmit={handleSubmit}>
         {errorMsg && <p className="text-red-500 flex items-center justify-center mb-2 gap-2"><MdError />{errorMsg}</p>}
         <div>
-          <label for='email' className="block mb-2 text-[var(--primary-color)] after:ml-0.5 after:text-red-500 after:content-['*']">Email</label>
+          <label htmlFor='email' className="block mb-2 text-[var(--primary-color)] after:ml-0.5 after:text-red-500 after:content-['*']">Email</label>
           <input className="w-full p-2 mb-6 bg-white text-[var(--primary-color)] border-b-2 border-indigo-500 outline-none" type="email" name="email" id='email' placeholder='yourname@example.com' required value={email} onChange={(e) => setEmail(e.target.value)} />
         </div>
         <div>
-          <label className="block mb-2 text-[var(--primary-color)] after:ml-0.5 after:text-red-500 after:content-['*']" for="password">Mật khẩu</label>
+          <label className="block mb-2 text-[var(--primary-color)] after:ml-0.5 after:text-red-500 after:content-['*']" htmlFor="password">Mật khẩu</label>
           <input className="w-full p-2 mb-6 bg-white text-[var(--primary-color)] border-b-2 border-indigo-500 outline-none" type="password" name="password" id='password' required placeholder='Nhập mật khẩu' value={password} onChange={(e) => setPassword(e.target.value)} />
         </div>
         <div>          
