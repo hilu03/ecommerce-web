@@ -1,19 +1,46 @@
-import { useState } from 'react'
+import { useState } from 'react';
 import RatingStars from './RatingStars';
 import { formatDateTimeVN } from '@/utils/formatDatetime';
+import { useAuth } from '@/context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { createReview } from '@/services/reviewService';
+import { toast } from 'sonner';
 
-const ReviewSection = ({ reviewStatistic, product, reviews }) => {
+const ReviewSection = ({ reviewStatistic, product, reviews, reloadFunction, onLoadMore }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedRating, setSelectedRating] = useState(0);
+  const [selectedRating, setSelectedRating] = useState(5);
+  const [content, setContent] = useState("");
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
     setIsModalOpen(false);
-    setSelectedRating(0); // Reset khi đóng modal
+    setSelectedRating(5);
+    setContent("");
   };
 
   const handleRatingClick = (rating) => {
     setSelectedRating(rating);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await createReview({
+        rating: selectedRating,
+        comment: content,
+        productId: product.id
+      });
+      closeModal();
+      reloadFunction(); 
+    } catch (error) {
+      console.error(error);
+      if (error.message === "Already reviewed") {
+        alert("Bạn đã đánh giá sản phẩm này trước đây!");
+        closeModal();
+      }
+    }
   };
 
   return (
@@ -41,7 +68,13 @@ const ReviewSection = ({ reviewStatistic, product, reviews }) => {
               <button
                 type="button"
                 className="mb-2 me-2 rounded-lg bg-[var(--primary-color)] cursor-pointer px-5 py-2.5 text-sm font-medium text-white hover:opacity-70"
-                onClick={openModal}
+                onClick={() => {
+                  if (user && user.role === "ROLE_USER") {
+                    openModal();
+                  } else {
+                    navigate("/login");
+                  }
+                }}
               >
                 Viết đánh giá
               </button>
@@ -91,11 +124,12 @@ const ReviewSection = ({ reviewStatistic, product, reviews }) => {
             </div>
           ))}
 
-          {reviews.page.number !== reviews.page.totalPages - 1 && (
+          {reviews.page.number < reviews.page.totalPages - 1 && (
             <div className="mt-6 text-center">
               <button
                 type="button"
                 className="mb-2 me-2 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 cursor-pointer"
+                onClick={onLoadMore}
               >
                 Xem thêm đánh giá
               </button>
@@ -104,7 +138,6 @@ const ReviewSection = ({ reviewStatistic, product, reviews }) => {
         </div>
       </section>
 
-      {/* Add Review Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-opacity-50">
           <div className="relative w-full max-w-lg p-4">
@@ -127,46 +160,47 @@ const ReviewSection = ({ reviewStatistic, product, reviews }) => {
               </div>
 
               <div className="p-4 md:p-5">
-                {/* Chọn rating */}
-                <div className="flex items-center justify-center space-x-1 mb-4">
-                  {[1, 2, 3, 4, 5].map(star => (
-                    <svg
-                      key={star}
-                      onClick={() => handleRatingClick(star)}
-                      className={`w-8 h-8 cursor-pointer ${
-                        star <= selectedRating ? 'text-yellow-400' : 'text-gray-300'
-                      }`}
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
+                <form onSubmit={handleSubmit}>
+                  <div className="flex items-center justify-center space-x-1 mb-4">
+                    {[1, 2, 3, 4, 5].map(star => (
+                      <svg
+                        key={star}
+                        onClick={() => handleRatingClick(star)}
+                        className={`w-8 h-8 cursor-pointer ${star <= selectedRating ? 'text-yellow-400' : 'text-gray-300'}`}
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.204 3.703a1 1 0 00.95.69h3.891c.969 0 1.371 1.24.588 1.81l-3.148 2.292a1 1 0 00-.364 1.118l1.204 3.703c.3.921-.755 1.688-1.54 1.118l-3.148-2.292a1 1 0 00-1.176 0l-3.148 2.292c-.785.57-1.84-.197-1.54-1.118l1.204-3.703a1 1 0 00-.364-1.118L2.707 9.13c-.783-.57-.38-1.81.588-1.81h3.89a1 1 0 00.951-.69l1.204-3.703z" />
+                      </svg>
+                    ))}
+                  </div>
+
+                  <textarea
+                    required
+                    rows="4"
+                    className="w-full rounded-lg border border-gray-300 p-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    placeholder="Chia sẻ trải nghiệm của bạn..."
+                    value={content}
+                    onChange={e => setContent(e.target.value)}
+                  />
+
+                  <div className="mt-4 flex justify-end">
+                    <button
+                      type="submit"
+                      className="rounded-lg bg-[var(--primary-color)] px-5 py-2 text-white hover:opacity-80"
                     >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.204 3.703a1 1 0 00.95.69h3.891c.969 0 1.371 1.24.588 1.81l-3.148 2.292a1 1 0 00-.364 1.118l1.204 3.703c.3.921-.755 1.688-1.54 1.118l-3.148-2.292a1 1 0 00-1.176 0l-3.148 2.292c-.785.57-1.84-.197-1.54-1.118l1.204-3.703a1 1 0 00-.364-1.118L2.707 9.13c-.783-.57-.38-1.81.588-1.81h3.89a1 1 0 00.951-.69l1.204-3.703z" />
-                    </svg>
-                  ))}
-                </div>
+                      Gửi đánh giá
+                    </button>
+                  </div>
 
-                {/* Nội dung đánh giá */}
-                <textarea
-                  rows="4"
-                  className="w-full rounded-lg border border-gray-300 p-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  placeholder="Chia sẻ trải nghiệm của bạn..."
-                />
-
-                {/* Submit button */}
-                <div className="mt-4 flex justify-end">
-                  <button
-                    type="submit"
-                    className="rounded-lg bg-[var(--primary-color)] px-5 py-2 text-white hover:opacity-80"
-                  >
-                    Gửi đánh giá
-                  </button>
-                </div>
+                </form>
               </div>
             </div>
           </div>
         </div>
       )}
     </>
-  )
+  );
 };
 
 export default ReviewSection;

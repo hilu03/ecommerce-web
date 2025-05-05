@@ -32,7 +32,6 @@ const Signup = () => {
         phoneNumber
       });
   
-      // Nếu không có lỗi → điều hướng
       navigate("/login");
     } catch (error) {
       setErrorMsg(error.message);
@@ -51,7 +50,7 @@ const Signup = () => {
         {errorMsg && <p className="text-red-500 flex items-center justify-center mb-2 gap-2"><MdError />{errorMsg}</p>}
         <div className="mb-4 md:flex md:justify-between">
           <div className="mb-4 md:mr-2 md:mb-0">
-            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-white after:ml-0.5 after:text-red-500 after:content-['*']" for="firstName">
+            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-white after:ml-0.5 after:text-red-500 after:content-['*']" htmlFor="firstName">
               Tên
             </label>
             <input
@@ -65,7 +64,7 @@ const Signup = () => {
             />
           </div>
           <div className="md:ml-2">
-            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-white after:ml-0.5 after:text-red-500 after:content-['*']" for="lastName">
+            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-white after:ml-0.5 after:text-red-500 after:content-['*']" htmlFor="lastName">
               Họ
             </label>
             <input
@@ -80,7 +79,7 @@ const Signup = () => {
           </div>
         </div>
         <div className="mb-4">
-          <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-white after:ml-0.5 after:text-red-500 after:content-['*']" for="phone">
+          <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-white after:ml-0.5 after:text-red-500 after:content-['*']" htmlFor="phone">
             Điện thoại
           </label>
           <input
@@ -96,7 +95,7 @@ const Signup = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-white after:ml-0.5 after:text-red-500 after:content-['*']" for="email">
+          <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-white after:ml-0.5 after:text-red-500 after:content-['*']" htmlFor="email">
             Email
           </label>
           <input
@@ -111,7 +110,7 @@ const Signup = () => {
         </div>
         <div className="mb-4 md:flex md:justify-between">
           <div className="mb-4 md:mr-2 md:mb-0">
-            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-white after:ml-0.5 after:text-red-500 after:content-['*']" for="password">
+            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-white after:ml-0.5 after:text-red-500 after:content-['*']" htmlFor="password">
               Mật khẩu
             </label>
             <input
@@ -126,7 +125,7 @@ const Signup = () => {
             {/* <p className="text-xs italic text-red-500">Please choose a password.</p> */}
           </div>
           <div className="md:ml-2">
-            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-white after:ml-0.5 after:text-red-500 after:content-['*']" for="c_password">
+            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-white after:ml-0.5 after:text-red-500 after:content-['*']" htmlFor="c_password">
               Xác nhận mật khẩu
             </label>
             <input

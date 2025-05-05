@@ -1,67 +1,74 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ProductInfo from "@/components/ProductInfo";
-import { getProductDetailById, getReviewStatisticByProductId } from "@/services/productService";
-import { getReviewByProductId } from "@/services/reviewService";
 import ReviewSection from "@/components/ReviewSection";
+import { getProductById, getReviewStatisticByProductId } from "@/services/productService";
+import { getReviewByProductId } from "@/services/reviewService";
 
 const ProductDetail = () => {
-  const { id } = useParams();  // Lấy id từ URL
+  const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [reviewStatistic, setReviewStatistic] = useState(null);
-  const [reviews, setReviews] = useState(null);
-  const [page, setPage] = useState(0);
+  const [reviews, setReviews] = useState({ content: [], page: { number: 0, totalPages: 1 } });
+
+  const fetchProduct = async () => {
+    try {
+      const productData = await getProductById(id);
+      setProduct(productData);
+    } catch (error) {
+      console.error("Error fetching product:", error);
+    }
+  };
+
+  const fetchReviewStatistic = async () => {
+    try {
+      const statisticData = await getReviewStatisticByProductId(id);
+      setReviewStatistic(statisticData);
+    } catch (error) {
+      console.error("Error fetching review statistic:", error);
+    }
+  };
+
+  const fetchReviewByProductId = async (page = 0) => {
+    try {
+      const reviewPage = await getReviewByProductId(id, page);
+      setReviews(prev => ({
+        content: page === 0 ? reviewPage.content : [...prev.content, ...reviewPage.content],
+        page: reviewPage.page
+      }));
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    }
+  };
+
+  const handleLoadMore = () => {
+    fetchReviewByProductId(reviews.page.number + 1);
+  };
+
+  const reloadReviews = async () => {
+    await fetchReviewStatistic();
+    await fetchReviewByProductId(0);
+  };
 
   useEffect(() => {
-    // Gọi API lấy thông tin sản phẩm
-    const fetchProductDetail = async () => {
-      try {
-        const productData = await getProductDetailById(id);
-        setProduct(productData);
-      } catch (error) {
-        console.error("Error fetching product details:", error.message);
-      }
-    };
-
-    // Gọi API lấy thông tin review của sản phẩm
-    const fetchReviewStatistic = async () => {
-      try {
-        const reviewData = await getReviewStatisticByProductId(id);
-        setReviewStatistic(reviewData);
-      } catch (error) {
-        console.error("Error fetching product reviews:", error.message);
-      }
-    };
-
-    const fetchReviewByProductId = async () => {
-      try {
-        const reviewData = await getReviewByProductId(id, page);
-        // console.log(reviewData);
-        setReviews(reviewData);
-      } catch (error) {
-        console.error("Error fetching product reviews:", error.message);
-      }
-    };
-
-    fetchProductDetail();
+    fetchProduct();
     fetchReviewStatistic();
-    fetchReviewByProductId();
-  }, [id]);  // Gọi lại khi ID thay đổi
+    fetchReviewByProductId(0);
+  }, [id]);
 
-  // Đợi dữ liệu tải về
-  if (!product || !reviewStatistic || !reviews) return <div>Loading...</div>;
+  if (!product || !reviewStatistic) return <div>Loading...</div>;
 
   return (
-    <>
-    <ProductInfo
-      product={{
-        ...product,
-        rating: reviewStatistic.averageRating,
-        reviewCount: reviewStatistic.count,
-      }}
-    />
-    <ReviewSection reviewStatistic={reviewStatistic} product={product} reviews={reviews}/>
-    </>
+    <div>
+      <ProductInfo product={product} reviewStatistic={reviewStatistic}/>
+      <ReviewSection
+        product={product}
+        reviewStatistic={reviewStatistic}
+        reviews={reviews}
+        reloadFunction={reloadReviews}
+        onLoadMore={handleLoadMore}
+      />
+    </div>
   );
 };
 
