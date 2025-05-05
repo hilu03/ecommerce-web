@@ -13,7 +13,6 @@ export const getActiveFeaturedProduct = async (page = 0, size = 10, sortDir = "a
 
     return response.data.data;
   } catch (error) {
-    // Ném ra lỗi để component phía trên xử lý hiển thị
     throw new Error(error.response?.data?.message);
   }
 };
@@ -23,7 +22,6 @@ export const getProductById = async (id) => {
     const response = await axiosPublic.get(`/products/${id}`);
     return response.data.data;
   } catch (error) {
-    // Ném ra lỗi để component phía trên xử lý hiển thị
     throw new Error(error.response?.data?.message);
   }
 };
@@ -33,7 +31,6 @@ export const getReviewStatisticByProductId = async (id) => {
     const response = await axiosPublic.get(`/reviews/product/${id}/statistic`);
     return response.data.data;
   } catch (error) {
-    // Ném ra lỗi để component phía trên xử lý hiển thị
     throw new Error(error.response?.data?.message);
   }
 };
@@ -50,7 +47,6 @@ export const getActiveProductByCategoryId = async (id, page = 0, size = 10, sort
     });
     return response.data.data;
   } catch (error) {
-    // Ném ra lỗi để component phía trên xử lý hiển thị
     throw new Error(error.response?.data?.message);
   }
 };
@@ -67,7 +63,6 @@ export const getHiddenProductByCategoryId = async (id, page = 0, size = 10, sort
     });
     return response.data.data;
   } catch (error) {
-    // Ném ra lỗi để component phía trên xử lý hiển thị
     throw new Error(error.response?.data?.message);
   }
 };
@@ -152,6 +147,7 @@ export const getAllHiddenProducts = async (page = 0, size = 10, sortDir = "asc",
     return response.data.data;
   } 
   catch (error) {
+    console.error(error);
     throw new Error(error.response?.data?.message);
   }
 };
@@ -162,6 +158,74 @@ export const getProductDetailForAdmin = async (id) => {
     return response.data.data;
   } 
   catch (error) {
+    console.error(error);
+    throw new Error(error.response?.data?.message);
+  }
+}
+
+export const getAllFeaturedProducts = async (page = 0, size = 10, sortDir = "desc", sortBy = "updatedAt") => {
+  try {
+    const response = await axiosAuth.get("/products/feature", {
+      params: {
+        page,
+        size,
+        sortBy,
+        sortDir
+      }
+    });
+    return response.data.data;
+  }
+  catch (error) {
+    console.error(error);
+    throw new Error(error.response?.data?.message);
+  }
+}
+
+export const updateFeaturedProduct = async (id, data) => {
+  try {
+    await axiosAuth.put(`/products/feature/${id}`, data);
+  }
+  catch (error) {
+    console.error(error);
+    throw new Error(error.response?.data?.message);
+  }
+}
+
+export const deleteFeatureProduct = async (id) => {
+  try {
+    await axiosAuth.delete(`/products/feature/${id}`);
+  }
+  catch (error) {
+    console.error(error);
+    throw new Error(error.response?.data?.message);
+  }
+}
+
+export const searchByName = async (name, page = 0, size = 5, sortDir = "desc", sortBy = "updatedAt") => {
+  try {
+    const response = await axiosAuth.get("/products/search", {
+      params: {
+        name,
+        page,
+        size,
+        sortBy,
+        sortDir
+      }
+    });
+    return response.data.data;
+  }
+  catch (error) {
+    console.error(error);
+    throw new Error(error.response?.data?.message);
+  }
+}
+
+export const addFeaturedProduct = async (data) => {
+  try {
+    await axiosAuth.post("/products/feature", data);
+  } 
+  catch (error) {
+    console.error(error);
     throw new Error(error.response?.data?.message);
   }
 }

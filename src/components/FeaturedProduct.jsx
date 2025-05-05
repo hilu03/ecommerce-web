@@ -5,15 +5,18 @@ import { getActiveFeaturedProduct } from "@/services/productService";
 const FeaturedProduct = () => {
   const [featuredProduct, setFeaturedProduct] = useState([]);
   const [page, setPage] = useState(0);
-  const [isLastPage, setIsLastPage] = useState(false);
+  const [isLastPage, setIsLastPage] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getActiveFeaturedProduct(page);
-        setFeaturedProduct(data.content);
+        setFeaturedProduct(...featuredProduct, data.content);
         if (data.page.number === data.page.totalPages - 1) {
           setIsLastPage(true);
+        }
+        else {
+          setIsLastPage(false);
         }
       } catch (err) {
         console.error("Cannot load featured products!", err);
@@ -33,7 +36,7 @@ const FeaturedProduct = () => {
           ? featuredProduct.map(p => <ProductCard key={p.product.id} info={p.product} />)
           : <p className="text-center w-full">Không có sản phẩm nào.</p>}
       </div>
-      {!isLastPage && (
+      {featuredProduct.length > 0 && !isLastPage && (
         <div className="mt-6 text-center">
           <button
             type="button"

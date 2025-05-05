@@ -174,7 +174,7 @@ const ProductManagement = () => {
             {products?.content?.length > 0 ? (
               products.content.map((product) => (
                 <tr key={product.id} className="text-center hover:bg-gray-50">
-                  <td className="p-2 border text-left">{product.name}</td>
+                  <td className="p-2 border text-left max-w-[200px] truncate">{product.name}</td>
                   <td className="p-2 border">
                     <img
                       src={product.imageUrl}

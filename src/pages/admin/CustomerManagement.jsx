@@ -1,5 +1,5 @@
 import CustomPagination from "@/components/CustomPagination";
-import { getActiveUsers, getInactiveUsers, toggleUserStatus } from "@/services/userService";
+import { getActiveUsers, getInactiveUsers, toggleUserStatus } from "@/services/adminService";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 

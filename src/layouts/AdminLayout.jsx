@@ -1,4 +1,5 @@
-import { Outlet, Link } from "react-router-dom";
+import { useState } from "react";
+import { Outlet, Link, useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -9,10 +10,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { FaUserCircle } from "react-icons/fa";
 import { useAuth } from "@/context/AuthContext";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 const AdminLayout = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const { logout } = useAuth();
+  const navigate = useNavigate();
+  const [productMenuOpen, setProductMenuOpen] = useState(true); // toggle submenu
 
   return (
     <div className="flex">
@@ -21,7 +25,23 @@ const AdminLayout = () => {
         <nav className="flex flex-col space-y-3">
           <Link to="/admin" className="hover:bg-white hover:text-[var(--primary-color)] p-2 rounded">Dashboard</Link>
           <Link to="/admin/categories" className="hover:bg-white hover:text-[var(--primary-color)] p-2 rounded">Quản lý danh mục</Link>
-          <Link to="/admin/products" className="hover:bg-white hover:text-[var(--primary-color)] p-2 rounded">Quản lý sản phẩm</Link>
+
+          <div>
+            <button
+              onClick={() => setProductMenuOpen(!productMenuOpen)}
+              className="w-full flex justify-between items-center hover:bg-white hover:text-[var(--primary-color)] p-2 rounded"
+            >
+              <span>Quản lý sản phẩm</span>
+              {productMenuOpen ? <FaChevronUp /> : <FaChevronDown />}
+            </button>
+            {productMenuOpen && (
+              <div className="ml-4 mt-2 flex flex-col space-y-2">
+                <Link to="/admin/products" className="hover:underline">Danh sách sản phẩm</Link>
+                <Link to="/admin/featured-products" className="hover:underline">Sản phẩm nổi bật</Link>
+              </div>
+            )}
+          </div>
+
           <Link to="/admin/users" className="hover:bg-white hover:text-[var(--primary-color)] p-2 rounded">Quản lý khách hàng</Link>
         </nav>
       </aside>
@@ -38,7 +58,7 @@ const AdminLayout = () => {
               <DropdownMenuLabel>Tài khoản</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Billing</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate("/change-password")}>Đổi mật khẩu</DropdownMenuItem>
               <DropdownMenuItem onClick={logout}>Đăng xuất</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
